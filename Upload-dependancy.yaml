@@ -1,0 +1,4 @@
+- name: Submit dependencies to GitHub
+  uses: github/dependency-submission-action@v1
+  with:
+    snapshot-file: sbom.json
