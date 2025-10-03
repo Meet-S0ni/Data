@@ -1,0 +1,103 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-issuer
+    nginx.ingress.kubernetes.io/custom-http-errors: 400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,421,422,423,424,425,426,528,429,431,451,500,501,502,503,504,505,506,507,508,510,511,default
+    nginx.ingress.kubernetes.io/default-backend: ingressdev/nginx-errors
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 15m
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header Content-Security-Policy "img-src 'self' https://* data: image/webp data: image/svg+xml; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net";
+      more_set_headers "X-Frame-Options: SAMEORIGIN";
+      more_set_headers "X-XSS-Protection: 1; mode=block";
+      more_set_headers "X-Content-Type-Options: nosniff";
+      more_set_headers "Referrer-Policy: strict-origin-when-cross-origin";
+    nginx.ingress.kubernetes.io/server-snippet: |
+      more_set_headers "Access-Control-Allow-Origin $http_origin";
+      more_set_headers "Access-Control-Allow-Methods GET, POST, OPTIONS, HEAD";
+      more_set_headers "Access-Control-Allow-Headers Authorization, Origin, X-Requested-With, Content-Type, Accept";
+      more_set_headers "Access-Control-Max-Age 3600";
+  namespace: webdev
+  name: ingress-rule-dev511nj
+spec:
+  ingressClassName: nginx-dev
+  rules:
+  - host: sample-domain.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: web-dev-svc
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+      - backend:
+          service:
+            name: martin-tile-svc-dev
+            port:
+              number: 80
+        path: /catalog
+        pathType: Prefix
+      - backend:
+          service:
+            name: martin-tile-svc-dev
+            port:
+              number: 80
+        path: /livespeed_func_param
+        pathType: Prefix
+      - backend:
+          service:
+            name: martin-tile-svc-dev
+            port:
+              number: 80
+        path: /osmvectortile
+        pathType: Prefix
+      - backend:
+          service:
+            name: clientapidev-service-bridge
+            port:
+              number: 80
+        path: /client
+        pathType: Prefix
+      - backend:
+          service:
+            name: adminapidev-service-bridge
+            port:
+              number: 80
+        path: /admin
+        pathType: Prefix
+      - backend:
+          service:
+            name: accountapidev-service-bridge
+            port:
+              number: 80
+        path: /account
+        pathType: Prefix
+      - backend:
+          service:
+            name: martin-tile-svc-dev
+            port:
+              number: 80
+        path: /livespeed_func_param_all_state
+        pathType: Prefix
+      - backend:
+          service:
+            name: martin-tile-svc-dev
+            port:
+              number: 80
+        path: /specialized_links_zxy
+        pathType: Prefix
+      - backend:
+          service:
+            name: martin-tile-svc-dev
+            port:
+              number: 80
+        path: /routing_coverage_zxy
+        pathType: Prefix
+  tls:
+  - hosts:
+    - sample-domain.com
+    secretName: sample-domain-secret
